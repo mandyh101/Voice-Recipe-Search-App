@@ -4,8 +4,10 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from '../components/ui/button'
 import { Card, CardContent } from '../components/ui/card'
 import { Mic, MicOff, Search } from 'lucide-react'
-import { Recipe } from './types'
-import { dummyRecipes } from './data/dummy-recipes'
+import { Recipe, ParsedRecipe } from '../types'
+// import { dummyRecipes } from './data/dummy-recipes'
+import { searchRecipes } from '../services/api/recipeservice'
+// import { ParsedRecipe } from '../types'
 
 // Define types for Web Speech API
 interface SpeechRecognitionErrorEvent extends Event {
@@ -57,28 +59,56 @@ declare global {
 export default function VoiceRecipeSearch(): JSX.Element {
   const [isListening, setIsListening] = useState<boolean>(false)
   const [searchText, setSearchText] = useState<string>('')
-  const [recipes, setRecipes] = useState<Recipe[]>(dummyRecipes)
+  const [recipes, setRecipes] = useState<ParsedRecipe[]>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
   const recognitionRef = useRef<SpeechRecognition | null>(null)
 
+  // /**
+  //  * Filter recipes based on the search text.
+  //  */
+  // const handleSearch = useCallback((): void => {
+  //   const searchTerms = searchText.toLowerCase().trim().split(' ')
+  //   console.log('searchterms', searchTerms)
+  //   const filteredRecipes = dummyRecipes.filter((recipe) =>
+  //     searchTerms.every(
+  //       (term) =>
+  //         recipe.title.toLowerCase().includes(term) ||
+  //         recipe.ingredients.some((ingredient) =>
+  //           ingredient.toLowerCase().includes(term)
+  //         )
+  //     )
+  //   )
+  //   setRecipes(filteredRecipes)
+  //   // console.log('dummy', dummyRecipes)
+  //   // console.log('searchtetxt', searchText)
+  //   // console.log('filtered', filteredRecipes)
+  //   // console.log('recipes', recipes)
+  // }, [searchText])
+
   /**
-   * Filter recipes based on the search text.
+   * Search recipes using the API.
    */
-  const handleSearch = useCallback((): void => {
-    const searchTerms = searchText.toLowerCase().trim().split(' ')
-    const filteredRecipes = dummyRecipes.filter((recipe) =>
-      searchTerms.every(
-        (term) =>
-          recipe.title.toLowerCase().includes(term) ||
-          recipe.ingredients.some((ingredient) =>
-            ingredient.toLowerCase().includes(term)
-          )
-      )
-    )
-    setRecipes(filteredRecipes)
-    console.log('dummy', dummyRecipes)
-    console.log('searchtetxt', searchText)
-    console.log('filtered', filteredRecipes)
-    console.log('recipes', recipes)
+  const handleSearch = useCallback(async (): Promise<void> => {
+    if (!searchText.trim()) {
+      setRecipes([])
+      return
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const data = await searchRecipes(searchText)
+      console.log('data', data)
+      setRecipes(data)
+    } catch (err) {
+      console.error('Error fetching recipes:', err)
+      setError('Failed to fetch recipes. Please try again.')
+      setRecipes([])
+    } finally {
+      setIsLoading(false)
+    }
   }, [searchText])
 
   useEffect(() => {
@@ -116,6 +146,11 @@ export default function VoiceRecipeSearch(): JSX.Element {
         console.log(finalTranscript, interimTranscript)
         const currentTranscript = finalTranscript || interimTranscript
         if (currentTranscript.trim()) {
+          console.log(
+            'Update the search text after voice input',
+            currentTranscript,
+            finalTranscript
+          )
           setSearchText(currentTranscript)
           if (finalTranscript) {
             // Auto search when we have a final transcript
@@ -178,12 +213,22 @@ export default function VoiceRecipeSearch(): JSX.Element {
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    console.log(
+      'also update the search text when input changes - and this is updating to the last input instead of the current and overriding current voice inputs',
+      e.target.value
+    )
+    console.log('rec', recognitionRef)
     setSearchText(e.target.value)
   }
 
   return (
     <div className="container p-4 mx-auto">
       <h1 className="mb-4 text-2xl font-bold">Voice Recipe Search</h1>
+      <p className="mb-4">
+        Speak or type in your recipe search to discover new recipes! Please
+        note, you must be using Chrome or Safari to use the speech
+        functionality. Happy Cooking!
+      </p>
       <div className="flex items-center mb-4 space-x-2">
         <Button
           onClick={toggleListening}
@@ -209,7 +254,7 @@ export default function VoiceRecipeSearch(): JSX.Element {
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {recipes.map((recipe) => (
+        {/* {recipes.map((recipe) => (
           <Card key={recipe.id}>
             <CardContent className="p-4">
               <h2 className="mb-2 text-xl font-semibold">{recipe.title}</h2>
@@ -218,7 +263,7 @@ export default function VoiceRecipeSearch(): JSX.Element {
               </p>
             </CardContent>
           </Card>
-        ))}
+        ))} */}
       </div>
     </div>
   )
