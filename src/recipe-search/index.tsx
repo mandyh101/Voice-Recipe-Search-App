@@ -217,29 +217,31 @@ export default function VoiceRecipeSearch(): JSX.Element {
           functionality.
         </span>
       </p>
-      <SearchBar
-        searchText={searchText}
-        setSearchText={setSearchText}
-        handleSearch={handleSearch}
-        isListening={isListening}
-        toggleListening={toggleListening}
-      />
       {selectedRecipe ? (
         <SingleRecipePage
           recipe={selectedRecipe}
           onBack={() => setSelectedRecipe(null)}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {recipes &&
-            recipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                onSelect={() => setSelectedRecipe(recipe)}
-              />
-            ))}
-        </div>
+        <>
+          <SearchBar
+            searchText={searchText}
+            setSearchText={setSearchText}
+            handleSearch={handleSearch}
+            isListening={isListening}
+            toggleListening={toggleListening}
+          />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {recipes &&
+              recipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  onSelect={() => setSelectedRecipe(recipe)}
+                />
+              ))}
+          </div>
+        </>
       )}
     </div>
   )
