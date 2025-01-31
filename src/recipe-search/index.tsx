@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Button } from '../components/ui/button'
 import { Card, CardContent } from '../components/ui/card'
-import { Mic, MicOff, Search } from 'lucide-react'
 import { ParsedRecipe } from '../types'
 import { searchRecipes } from '../services/api/recipeservice'
 import SearchBar from '../components/searchbar'
+import RecipeCard from '../components/recipecard'
 
 // Types for Web Speech API
 interface SpeechRecognitionErrorEvent extends Event {
@@ -216,15 +215,7 @@ export default function VoiceRecipeSearch(): JSX.Element {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {recipes &&
           recipes.map((recipe) => (
-            <Card key={recipe.id}>
-              <CardContent className="p-4">
-                <h2 className="mb-2 text-xl font-semibold">{recipe.title}</h2>
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold">Ingredients:</span>{' '}
-                  {recipe.ingredients.join(', ')}
-                </p>
-              </CardContent>
-            </Card>
+            <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
       </div>
     </div>
