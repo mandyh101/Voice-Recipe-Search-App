@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Card, CardContent } from '../components/ui/card'
+import SingleRecipePage from '../components/singlerecipepage'
 import { ParsedRecipe } from '../types'
 import { searchRecipes } from '../services/api/recipeservice'
 import SearchBar from '../components/searchbar'
 import RecipeCard from '../components/recipecard'
+import { MessageSquareWarning } from 'lucide-react'
 
 // Types for Web Speech API
 interface SpeechRecognitionErrorEvent extends Event {
@@ -58,6 +59,9 @@ export default function VoiceRecipeSearch(): JSX.Element {
   const [isListening, setIsListening] = useState<boolean>(false)
   const [searchText, setSearchText] = useState<string>('')
   const [recipes, setRecipes] = useState<ParsedRecipe[]>()
+  const [selectedRecipe, setSelectedRecipe] = useState<ParsedRecipe | null>(
+    null
+  )
   const [isLoading, setIsLoading] = useState<boolean>(false) //todo add loading state
   const [error, setError] = useState<string | null>(null) //todo add error state
   const recognitionRef = useRef<SpeechRecognition | null>(null)
@@ -201,9 +205,17 @@ export default function VoiceRecipeSearch(): JSX.Element {
     <div className="container p-4 mx-auto">
       <h1 className="mb-4 text-2xl font-bold">Voice Recipe Search</h1>
       <p className="mb-4">
-        Speak or type in your recipe search to discover new recipes! Please
-        note, you must be using Chrome or Safari to use the speech
-        functionality. Happy Cooking!
+        Speak or type in your recipe search to discover new and creative recipes
+        - Happy Cooking!
+      </p>
+      {/* TODO hide below if browser is chrome or safari! */}
+      <p className="p-2 mb-4 text-sm bg-red-100 border-red-200">
+        {/* add a warning icon */}
+        <MessageSquareWarning className="inline mr-2" />
+        <span>
+          Please note, you must be using Chrome or Safari to use the speech
+          functionality.
+        </span>
       </p>
       <SearchBar
         searchText={searchText}
@@ -212,12 +224,23 @@ export default function VoiceRecipeSearch(): JSX.Element {
         isListening={isListening}
         toggleListening={toggleListening}
       />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {recipes &&
-          recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
-      </div>
+      {selectedRecipe ? (
+        <SingleRecipePage
+          recipe={selectedRecipe}
+          onBack={() => setSelectedRecipe(null)}
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {recipes &&
+            recipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                onSelect={() => setSelectedRecipe(recipe)}
+              />
+            ))}
+        </div>
+      )}
     </div>
   )
 }

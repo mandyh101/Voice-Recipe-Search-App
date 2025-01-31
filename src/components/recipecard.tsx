@@ -7,7 +7,13 @@ interface RecipeCardProps {
   ingredients: string[]
 }
 
-export default function RecipeCard({ recipe }: { recipe: RecipeCardProps }) {
+export default function RecipeCard({
+  recipe,
+  onSelect,
+}: {
+  recipe: RecipeCardProps
+  onSelect: () => void
+}) {
   return (
     <Card key={recipe.id}>
       <CardContent className="flex flex-col items-start h-full p-4">
@@ -16,7 +22,12 @@ export default function RecipeCard({ recipe }: { recipe: RecipeCardProps }) {
           <span className="font-semibold">Ingredients:</span>{' '}
           {recipe.ingredients.join(', ')}
         </p>
-        <Button className="mt-auto" variant={'outline'} size={'sm'}>
+        <Button
+          className="mt-auto"
+          variant={'outline'}
+          size={'sm'}
+          onClick={onSelect}
+        >
           View recipe
         </Button>
       </CardContent>
