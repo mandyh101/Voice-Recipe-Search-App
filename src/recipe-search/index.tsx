@@ -254,16 +254,17 @@ export default function VoiceRecipeSearch(): JSX.Element {
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {/* {recipes.map((recipe) => (
-          <Card key={recipe.id}>
-            <CardContent className="p-4">
-              <h2 className="mb-2 text-xl font-semibold">{recipe.title}</h2>
-              <p className="text-sm text-gray-600">
-                Ingredients: {recipe.ingredients.join(', ')}
-              </p>
-            </CardContent>
-          </Card>
-        ))} */}
+        {recipes &&
+          recipes.map((recipe) => (
+            <Card key={recipe.id}>
+              <CardContent className="p-4">
+                <h2 className="mb-2 text-xl font-semibold">{recipe.title}</h2>
+                <p className="text-sm text-gray-600">
+                  Ingredients: {recipe.ingredients.join(', ')}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
       </div>
     </div>
   )
