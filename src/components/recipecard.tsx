@@ -1,4 +1,5 @@
 import { Card, CardContent } from '../components/ui/card'
+import { Button } from './ui/button'
 
 interface RecipeCardProps {
   id: string
@@ -9,12 +10,15 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe }: { recipe: RecipeCardProps }) {
   return (
     <Card key={recipe.id}>
-      <CardContent className="p-4">
-        <h2 className="mb-2 text-xl font-semibold">{recipe.title}</h2>
-        <p className="text-sm text-gray-600">
+      <CardContent className="flex flex-col items-start h-full p-4">
+        <h2 className="mb-2 text-xl font-semibold text-left">{recipe.title}</h2>
+        <p className="mb-4 text-sm text-left text-gray-600">
           <span className="font-semibold">Ingredients:</span>{' '}
           {recipe.ingredients.join(', ')}
         </p>
+        <Button className="mt-auto" variant={'outline'} size={'sm'}>
+          View recipe
+        </Button>
       </CardContent>
     </Card>
   )
