@@ -44,9 +44,9 @@ export default function SingleRecipePage({
         <div className="mb-6 text-left">
           <h2 className="mb-2 text-xl font-semibold">Instructions</h2>
           <ol className="pl-6 space-y-2 list-decimal">
-            {recipe.instructions.split('|').map((instruction, index) => (
+            {recipe.instructions.map((instruction, index) => (
               <li key={index} className="text-gray-700">
-                {instruction.trim()}
+                {instruction}
               </li>
             ))}
           </ol>
