@@ -4,12 +4,11 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { Button } from '../components/ui/button'
 import { Card, CardContent } from '../components/ui/card'
 import { Mic, MicOff, Search } from 'lucide-react'
-import { Recipe, ParsedRecipe } from '../types'
-// import { dummyRecipes } from './data/dummy-recipes'
+import { ParsedRecipe } from '../types'
 import { searchRecipes } from '../services/api/recipeservice'
-// import { ParsedRecipe } from '../types'
+import SearchBar from '../components/searchbar'
 
-// Define types for Web Speech API
+// Types for Web Speech API
 interface SpeechRecognitionErrorEvent extends Event {
   error: string
   message?: string
@@ -60,31 +59,9 @@ export default function VoiceRecipeSearch(): JSX.Element {
   const [isListening, setIsListening] = useState<boolean>(false)
   const [searchText, setSearchText] = useState<string>('')
   const [recipes, setRecipes] = useState<ParsedRecipe[]>()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false) //todo add loading state
+  const [error, setError] = useState<string | null>(null) //todo add error state
   const recognitionRef = useRef<SpeechRecognition | null>(null)
-
-  // /**
-  //  * Filter recipes based on the search text.
-  //  */
-  // const handleSearch = useCallback((): void => {
-  //   const searchTerms = searchText.toLowerCase().trim().split(' ')
-  //   console.log('searchterms', searchTerms)
-  //   const filteredRecipes = dummyRecipes.filter((recipe) =>
-  //     searchTerms.every(
-  //       (term) =>
-  //         recipe.title.toLowerCase().includes(term) ||
-  //         recipe.ingredients.some((ingredient) =>
-  //           ingredient.toLowerCase().includes(term)
-  //         )
-  //     )
-  //   )
-  //   setRecipes(filteredRecipes)
-  //   // console.log('dummy', dummyRecipes)
-  //   // console.log('searchtetxt', searchText)
-  //   // console.log('filtered', filteredRecipes)
-  //   // console.log('recipes', recipes)
-  // }, [searchText])
 
   /**
    * Search recipes using the API.
@@ -229,30 +206,13 @@ export default function VoiceRecipeSearch(): JSX.Element {
         note, you must be using Chrome or Safari to use the speech
         functionality. Happy Cooking!
       </p>
-      <div className="flex items-center mb-4 space-x-2">
-        <Button
-          onClick={toggleListening}
-          variant={isListening ? 'destructive' : 'default'}
-        >
-          {isListening ? (
-            <MicOff className="w-4 h-4 mr-2" />
-          ) : (
-            <Mic className="w-4 h-4 mr-2" />
-          )}
-          {isListening ? 'Stop Listening' : 'Start Listening'}
-        </Button>
-        <input
-          type="text"
-          value={searchText}
-          onChange={handleInputChange}
-          className="flex-grow p-2 border rounded"
-          placeholder="Say or type your recipe search..."
-        />
-        <Button onClick={handleSearch}>
-          <Search className="w-4 h-4 mr-2" />
-          Search
-        </Button>
-      </div>
+      <SearchBar
+        searchText={searchText}
+        setSearchText={setSearchText}
+        handleSearch={handleSearch}
+        isListening={isListening}
+        toggleListening={toggleListening}
+      />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {recipes &&
           recipes.map((recipe) => (
