@@ -8,6 +8,7 @@ export interface SearchBarProps {
   handleSearch: () => void
   isListening: boolean
   toggleListening: () => void
+  isLoading: boolean
 }
 
 export default function SearchBar({
@@ -16,6 +17,7 @@ export default function SearchBar({
   handleSearch,
   isListening,
   toggleListening,
+  isLoading,
 }: SearchBarProps) {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value)
@@ -50,9 +52,9 @@ export default function SearchBar({
           </button>
         )}
       </div>
-      <Button onClick={handleSearch}>
+      <Button onClick={handleSearch} disabled={isLoading}>
         <Search className="w-4 h-4 mr-2" />
-        Search
+        {isLoading ? 'Searching...' : 'Search'}
       </Button>
     </div>
   )

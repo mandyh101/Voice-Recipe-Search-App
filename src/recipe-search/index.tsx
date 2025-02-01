@@ -65,11 +65,17 @@ export default function VoiceRecipeSearch(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false) //todo add loading state
   const [error, setError] = useState<string | null>(null) //todo add error state
   const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const [tryAgainMessage, setTryAgainMessage] = useState<string>('')
 
   /**
    * Search recipes using the API.
    */
   const handleSearch = useCallback(async (): Promise<void> => {
+    // reset try again message when user searches again
+    if (tryAgainMessage) {
+      setTryAgainMessage('')
+    }
+
     if (!searchText.trim()) {
       setRecipes([])
       return
@@ -81,6 +87,9 @@ export default function VoiceRecipeSearch(): JSX.Element {
     try {
       const data = await searchRecipes(searchText)
       console.log('data', data)
+      if (data.length === 0) {
+        setTryAgainMessage('No recipes found. Please try again.')
+      }
       setRecipes(data)
     } catch (err) {
       console.error('Error fetching recipes:', err)
@@ -192,6 +201,46 @@ export default function VoiceRecipeSearch(): JSX.Element {
     }
   }
 
+  const renderContent = () => {
+    if (error) {
+      return (
+        <div className="p-8 text-center text-red-600">
+          An error occurred while searching for recipes. Please try again.
+        </div>
+      )
+    }
+
+    if (tryAgainMessage) {
+      return (
+        <div className="p-8 text-center text-gray-600">
+          No recipes found for your search. Please try another ingredient.
+        </div>
+      )
+    }
+
+    return (
+      <div>
+        {selectedRecipe ? (
+          <SingleRecipePage
+            recipe={selectedRecipe}
+            onBack={() => setSelectedRecipe(null)}
+          />
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {recipes &&
+              recipes.map((recipe, index) => (
+                <RecipeCard
+                  key={index}
+                  recipe={recipe}
+                  onSelect={() => setSelectedRecipe(recipe)}
+                />
+              ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="container p-4 mx-auto">
       <h1 className="mb-4 text-2xl font-bold">Voice Recipe Search</h1>
@@ -221,17 +270,9 @@ export default function VoiceRecipeSearch(): JSX.Element {
             handleSearch={handleSearch}
             isListening={isListening}
             toggleListening={toggleListening}
+            isLoading={isLoading}
           />
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {recipes &&
-              recipes.map((recipe, index) => (
-                <RecipeCard
-                  key={index}
-                  recipe={recipe}
-                  onSelect={() => setSelectedRecipe(recipe)}
-                />
-              ))}
-          </div>
+          {renderContent()}
         </>
       )}
     </div>
