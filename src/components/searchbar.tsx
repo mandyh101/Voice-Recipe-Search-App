@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from './ui/button'
-import { Mic, MicOff, Search } from 'lucide-react'
+import { Mic, MicOff, Search, X } from 'lucide-react'
 
 export interface SearchBarProps {
   searchText: string
@@ -33,13 +33,23 @@ export default function SearchBar({
         )}
         {isListening ? 'Stop Listening' : 'Start Listening'}
       </Button>
-      <input
-        type="text"
-        value={searchText}
-        onChange={handleInputChange}
-        className="flex-grow p-2 border rounded"
-        placeholder="Say or type your recipe search..."
-      />
+      <div className="relative flex-grow">
+        <input
+          type="text"
+          value={searchText}
+          onChange={handleInputChange}
+          className="w-full p-2 border rounded"
+          placeholder="Say or type your recipe search..."
+        />
+        {searchText && (
+          <button
+            onClick={() => setSearchText('')}
+            className="absolute text-gray-500 -translate-y-1/2 right-2 top-1/2 hover:text-gray-700"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
       <Button onClick={handleSearch}>
         <Search className="w-4 h-4 mr-2" />
         Search
