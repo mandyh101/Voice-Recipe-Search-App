@@ -21,7 +21,7 @@ export default function SearchBar({
     setSearchText(event.target.value)
   }
   return (
-    <div className="flex flex-col mb-4 space-y-3 sm:space-x-2 sm:items-center sm:flex-row">
+    <div className="flex flex-col mb-4 space-y-3 sm:space-y-0 sm:space-x-2 sm:items-center sm:flex-row">
       <Button
         onClick={toggleListening}
         variant={isListening ? 'destructive' : 'default'}
