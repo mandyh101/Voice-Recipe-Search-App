@@ -192,15 +192,6 @@ export default function VoiceRecipeSearch(): JSX.Element {
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log(
-      'also update the search text when input changes - and this is updating to the last input instead of the current and overriding current voice inputs',
-      e.target.value
-    )
-    console.log('rec', recognitionRef)
-    setSearchText(e.target.value)
-  }
-
   return (
     <div className="container p-4 mx-auto">
       <h1 className="mb-4 text-2xl font-bold">Voice Recipe Search</h1>
@@ -233,9 +224,9 @@ export default function VoiceRecipeSearch(): JSX.Element {
           />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {recipes &&
-              recipes.map((recipe) => (
+              recipes.map((recipe, index) => (
                 <RecipeCard
-                  key={recipe.id}
+                  key={index}
                   recipe={recipe}
                   onSelect={() => setSelectedRecipe(recipe)}
                 />
