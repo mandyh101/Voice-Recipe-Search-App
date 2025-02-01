@@ -59,10 +59,6 @@ This app is still in progress but so far.
 ## Technical Considerations
 This application currently requires a modern mobile browser with Web Speech API support. 
 
-### Lessons learned so far...
-
-Reflections coming soon...
-
 
 
 -----------------------------------------------------
