@@ -14,8 +14,10 @@ export default function SingleRecipePage({
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardContent className="p-6">
-        <div className="relative flex items-start justify-start gap-10 mb-6">
-          <h1 className="text-3xl font-bold text-left">{recipe.title}</h1>
+        <div className="relative flex flex-col gap-10 mb-6 sm:items-start sm:justify-start">
+          <h1 className="mt-16 text-3xl font-bold text-left sm:mt-0 text-wrap sm:max-w-[75%] md:max-w-[80%]">
+            {recipe.title}
+          </h1>
           <Button
             onClick={onBack}
             variant="default"
